@@ -61,7 +61,7 @@ A production-ready Retrieval-Augmented Generation (RAG) system built with FastAP
 
 ```bash
 git clone <repository-url>
-cd RAG pgvector System Project
+cd rag-pgvector-system-project
 ```
 
 ### 2. Environment Configuration
@@ -287,17 +287,22 @@ This will start an interactive chat session where you can test the agent's capab
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `APP_NAME` | Application name | `RAG pgvector System` |
-| `APP_PORT` | Server port | `8000` |
-| `DEBUG` | Debug mode | `false` |
-| `POSTGRES_*` | Database connection | See .env example |
-| `GEMINI_API_KEY` | Google Gemini API key | **Required** |
-| `EMBEDDING_MODEL` | Embedding model | `text-embedding-004` |
-| `VECTOR_DIMENSION` | Vector dimensions | `768` |
-| `CHUNK_SIZE` | Document chunk size | `1000` |
-| `CHUNK_OVERLAP` | Chunk overlap | `200` |
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `APP_NAME` | Application name | `RAG pgvector System` | No |
+| `APP_PORT` | Server port | `8000` | No |
+| `DEBUG` | Debug mode (true/false) | `false` | No |
+| `LOG_LEVEL` | Logging level (DEBUG, INFO, WARNING, ERROR) | `INFO` | No |
+| `GEMINI_API_KEY` | Google Gemini API key | - | **Yes** |
+| `POSTGRES_USER` | PostgreSQL username | `postgres` | No |
+| `POSTGRES_PASSWORD` | PostgreSQL password | `password` | No |
+| `POSTGRES_HOST` | PostgreSQL host | `localhost` | No |
+| `POSTGRES_PORT` | PostgreSQL port | `5432` | No |
+| `POSTGRES_DB` | PostgreSQL database name | `knowledge_db` | No |
+| `EMBEDDING_MODEL` | Gemini embedding model | `text-embedding-004` | No |
+| `VECTOR_DIMENSION` | Vector dimensions | `768` | No |
+| `CHUNK_SIZE` | Document chunk size | `1000` | No |
+| `CHUNK_OVERLAP` | Document chunk overlap | `200` | No |
 
 ### Document Processing
 
@@ -305,53 +310,6 @@ This will start an interactive chat session where you can test the agent's capab
 - **Embedding Model**: Google Gemini text-embedding-004
 - **Vector Dimensions**: 768
 - **Similarity Metric**: Cosine distance
-
-## 🧪 Testing
-
-### Health Check
-```bash
-curl http://localhost:8000/health
-```
-
-### Document Upload
-```bash
-curl -X POST "http://localhost:8000/api/knowledge/update" \
-  -H "Content-Type: application/json" \
-  -d '{"documents": [{"content": "Your document content here"}]}'
-```
-
-### Chat Query
-```bash
-curl -X POST "http://localhost:8000/api/chat" \
-  -H "Content-Type: application/json" \
-  -d '{"question": "What is the main topic of the documents?"}'
-```
-
-## 🔍 Monitoring & Logging
-
-### Application Logs
-```bash
-# View application logs
-docker-compose logs -f app
-
-# View database logs
-docker-compose logs -f postgres
-```
-
-### Performance Metrics
-- Response latency tracking
-- Document retrieval performance
-- Embedding generation time
-- Database query optimization
-
-### Health Monitoring
-```bash
-# Check service health
-curl http://localhost:8000/health
-
-# Check database connection
-docker-compose exec postgres pg_isready -U postgres
-```
 
 ## 🛡️ Security
 
@@ -372,43 +330,6 @@ docker-compose exec postgres pg_isready -U postgres
 - **Streaming Responses**: Real-time response streaming
 - **Connection Reuse**: Efficient HTTP client management
 - **Caching**: Strategic caching for frequently accessed data
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Issues**
-   ```bash
-   # Check PostgreSQL status
-   docker-compose ps postgres
-   
-   # Verify database connectivity
-   docker-compose exec postgres psql -U postgres -d knowledge_db -c "SELECT 1;"
-   ```
-
-2. **Embedding Generation Errors**
-   - Verify `GEMINI_API_KEY` is set correctly
-   - Check API rate limits
-   - Validate document content size
-
-3. **Vector Search Performance**
-   - Ensure pgvector extension is installed
-   - Check vector index creation
-   - Optimize similarity threshold
-
-### Development Tips
-
-```bash
-# Reset database
-docker-compose down -v
-docker-compose up -d
-
-# View API documentation
-open http://localhost:8000/docs
-
-# Monitor application logs
-docker-compose logs -f app | grep ERROR
-```
 
 ## 📄 License
 
