@@ -9,7 +9,7 @@ from typing import List, Dict, Any, AsyncGenerator
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from settings.config import settings
-from logs import logger
+from utils.logger import logger
 
 class LLMService:
     """Service for interacting with Gemini LLM"""

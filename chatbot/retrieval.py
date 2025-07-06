@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from settings.config import settings
 from chatbot.embeddings import embedding_service
 from chatbot.vector_store import VectorStore
-from logs import logger
+from utils.logger import logger
 
 class RetrievalService:
     """Service for document retrieval and RAG operations"""

@@ -16,7 +16,7 @@ from apis.models.responses import ChatResponse
 from apis.dependencies.database import get_database
 from services.chat_service import ChatService
 from utils.helper import build_api_response
-from logs import logger
+from utils.logger import logger
 
 router = APIRouter(tags=["chat"])
 
@@ -109,39 +109,6 @@ async def chat_streaming(
         logger.error(f"Error in streaming chat endpoint: {e}")
         return build_api_response(GenericResponseModel(
             message=f"Error processing streaming chat: {str(e)}",
-            error=True,
-            status_code=http.HTTPStatus.INTERNAL_SERVER_ERROR
-        ))
-
-@router.get('/chat/{chat_id}/history', response_model=GenericResponseModel)
-async def get_chat_history(
-    chat_id: str,
-    db: AsyncSession = Depends(get_database)
-):
-    """Get chat history for a specific chat ID"""
-    try:
-        chat_service = ChatService(db)
-        
-        # Get chat history
-        history = await chat_service.get_chat_history(chat_id)
-        
-        if history:
-            return build_api_response(GenericResponseModel(
-                message="Chat history retrieved successfully",
-                data=history,
-                status_code=http.HTTPStatus.OK
-            ))
-        else:
-            return build_api_response(GenericResponseModel(
-                message=f"No chat history found for {chat_id}",
-                error=True,
-                status_code=http.HTTPStatus.NOT_FOUND
-            ))
-        
-    except Exception as e:
-        logger.error(f"Error in get_chat_history endpoint: {e}")
-        return build_api_response(GenericResponseModel(
-            message=f"Internal server error: {str(e)}",
             error=True,
             status_code=http.HTTPStatus.INTERNAL_SERVER_ERROR
         ))

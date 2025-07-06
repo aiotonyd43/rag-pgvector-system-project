@@ -2,7 +2,7 @@ import os
 
 class Settings():
     # Application
-    app_name: str = os.getenv("APP_NAME", "Knowledge Base System")
+    app_name: str = os.getenv("APP_NAME", "RAG pgvector System")
     app_port: int = int(os.getenv("APP_PORT", 8000))
     debug_env = os.getenv("DEBUG", "false").lower()
     debug: bool = False if debug_env == "false" else True
@@ -29,10 +29,6 @@ class Settings():
     # Vector Store Configuration
     embedding_model: str = os.getenv("EMBEDDING_MODEL", "text-embedding-004")
     vector_dimension: int = int(os.getenv("VECTOR_DIMENSION", 768))
-    
-    # Performance Settings
-    max_response_latency_ms: int = int(os.getenv("MAX_RESPONSE_LATENCY_MS", 500))
-    max_input_tokens: int = int(os.getenv("MAX_INPUT_TOKENS", 500))
     
     # Chunking Settings
     chunk_size: int = int(os.getenv("CHUNK_SIZE", 1000))

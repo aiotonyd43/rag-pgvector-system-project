@@ -11,7 +11,7 @@ from typing import List
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from settings.config import settings
-from logs import logger
+from utils.logger import logger
 from settings.gemini_client import GeminiClientService
 
 class EmbeddingService:

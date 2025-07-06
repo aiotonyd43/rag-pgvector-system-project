@@ -14,7 +14,7 @@ from apis.models.responses import KnowledgeListResponse, KnowledgeUpdateResponse
 from apis.dependencies.database import get_database
 from services.knowledge_service import KnowledgeService
 from utils.helper import build_api_response
-from logs import logger
+from utils.logger import logger
 
 router = APIRouter(tags=["knowledge"])
 

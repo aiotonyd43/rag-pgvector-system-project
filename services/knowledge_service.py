@@ -8,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from chatbot.vector_store import VectorStore
 from chatbot.retrieval import retrieval_service
-from logs import logger
+from utils.logger import logger
 
 class KnowledgeService:
     """Service for managing knowledge base operations"""

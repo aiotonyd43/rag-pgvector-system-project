@@ -12,7 +12,7 @@ from apis.models.responses import AuditResponse
 from apis.dependencies.database import get_database
 from services.audit_service import AuditService
 from utils.helper import build_api_response
-from logs import logger
+from utils.logger import logger
 
 router = APIRouter(tags=["audit"])
 

@@ -12,7 +12,7 @@ from chatbot.vector_store import VectorStore
 from chatbot.retrieval import retrieval_service
 from chatbot.llm import llm_service
 from services.audit_service import AuditService
-from logs import logger
+from utils.logger import logger
 
 class ChatService:
     """Service for managing chat interactions"""
@@ -191,30 +191,6 @@ class ChatService:
                 'error': str(e)
             }
             yield f"Error: {str(e)}", error_metadata
-    
-    async def get_chat_history(self, chat_id: str) -> Dict[str, Any]:
-        """
-        Get chat history for a specific chat ID
-        
-        Args:
-            chat_id: Chat session ID
-            
-        Returns:
-            Chat history data
-        """
-        try:
-            audit_data = await self.audit_service.get_chat_audit(chat_id)
-            
-            if audit_data:
-                logger.info(f"Retrieved chat history for {chat_id}")
-                return audit_data
-            else:
-                logger.warning(f"No chat history found for {chat_id}")
-                return None
-                
-        except Exception as e:
-            logger.error(f"Error retrieving chat history: {e}")
-            raise
     
     async def add_feedback(self, chat_id: str, feedback: str) -> bool:
         """

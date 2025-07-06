@@ -14,7 +14,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from settings.config import settings
 from apis.endpoints import audit, chat, knowledge, status
 from database.connection import create_tables, close_db
-from logs import logger
+from utils.logger import logger
 
 # register startup and shutdown using lifespan Events
 @asynccontextmanager

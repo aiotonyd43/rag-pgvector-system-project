@@ -9,7 +9,7 @@ from sqlalchemy import text, select, delete
 # Add the app directory to Python path
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-from logs import logger
+from utils.logger import logger
 from utils.helper import get_current_vietnam_datetime
 
 class VectorStore:

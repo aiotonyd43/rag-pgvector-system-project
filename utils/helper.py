@@ -12,7 +12,7 @@ from datetime import datetime
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from apis.models.base import GenericResponseModel
-from logs import logger
+from utils.logger import logger
 
 def get_vietnam_timezone():
     """

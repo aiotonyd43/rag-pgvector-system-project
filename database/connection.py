@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from settings.config import settings
-from logs import logger
+from utils.logger import logger
 
 # Create base class for models
 Base = declarative_base()
