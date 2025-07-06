@@ -1,4 +1,4 @@
-# RAG Interview Project
+# RAG pgvector System Project
 
 A production-ready Retrieval-Augmented Generation (RAG) system built with FastAPI, PostgreSQL + pgvector, and Google Gemini AI. This system enables intelligent document search and AI-powered chat interactions with comprehensive audit logging.
 
@@ -61,7 +61,7 @@ A production-ready Retrieval-Augmented Generation (RAG) system built with FastAP
 
 ```bash
 git clone <repository-url>
-cd rag-interview
+cd RAG pgvector System Project
 ```
 
 ### 2. Environment Configuration
@@ -181,6 +181,107 @@ CREATE TABLE audit_logs (
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
 - **OpenAPI Schema**: `http://localhost:8000/openapi.json`
+
+## 🤖 Agent System
+
+The RAG system includes a powerful agent-based architecture built with LangGraph for sophisticated query processing and response generation.
+
+### Agent Architecture
+
+The agent system consists of:
+
+- **Primary Answer Query Agent**: Main RAG agent that processes user queries and generates contextual responses
+- **State Management**: Maintains conversation context and metadata throughout the interaction
+- **Document Retrieval**: Intelligent document retrieval using pgvector similarity search
+- **LLM Synthesis**: Context-aware response generation using Google Gemini
+
+### Agent Workflow
+
+The agent follows this 3-node processing workflow with conditional routing:
+
+1. **Sensitive Check**: Uses LLM to analyze if query contains political or sexual content
+2. **Primary Answer Query**: RAG pipeline that retrieves and synthesizes information (only if content is safe)
+3. **Postprocess**: Formats final response with metadata and source information
+
+### Agent Nodes
+
+The LangGraph agent contains three main nodes:
+
+#### 1. **sensitive_check**
+- Analyzes incoming queries for sensitive content (politics, sexual topics)
+- Uses Gemini LLM to classify content as "SENSITIVE" or "SAFE"
+- If sensitive: Returns rejection message and sets `is_sensitive=True`
+- If safe: Passes query to next node with `is_sensitive=False`
+
+#### 2. **primary_answer_query**
+- Main RAG processing node (only executed for safe content)
+- Extracts user query from conversation messages
+- Retrieves relevant documents from pgvector database using similarity search
+- Synthesizes contextual response using retrieved documents and Gemini LLM
+- Returns updated state with AI response and retrieved documents
+
+#### 3. **postprocess**
+- Final formatting and response preparation node
+- Formats responses with proper structure and metadata
+- Adds source information from retrieved documents
+- Handles both sensitive content rejections and successful RAG responses
+- Provides final polished output to user
+
+### Agent State
+
+The agent maintains state through the following structure:
+
+```python
+class State(TypedDict):
+    messages: Annotated[Sequence[AnyMessage], add_messages]
+    remaining_steps: int
+    query: str
+    is_sensitive: bool
+    retrieved_docs: list
+```
+
+#### State Fields
+
+- **messages**: Conversation history using LangChain message format
+- **remaining_steps**: Number of processing steps remaining
+- **query**: Current user query being processed
+- **is_sensitive**: Flag indicating if content contains sensitive topics
+- **retrieved_docs**: Documents retrieved from vector database (for non-sensitive queries)
+
+### Agent Flow
+
+```
+START → sensitive_check → [routing] → primary_answer_query → postprocess → END
+                             ↓
+                        postprocess → END
+```
+
+The agent uses conditional routing based on content sensitivity:
+
+**Path 1 (Safe Content):**
+1. `START` → `sensitive_check` (determines content is safe)
+2. `sensitive_check` → `primary_answer_query` (performs RAG)
+3. `primary_answer_query` → `postprocess` (formats response)
+4. `postprocess` → `END`
+
+**Path 2 (Sensitive Content):**
+1. `START` → `sensitive_check` (determines content is sensitive)
+2. `sensitive_check` → `postprocess` (formats rejection message)
+3. `postprocess` → `END`
+
+### Using the Agent
+
+To interact with the agent system, run the test workflow file:
+
+```bash
+# Navigate to the project directory
+cd rag-pgvector-system-project
+
+# Run the agent test workflow
+python tests/test_workflow.py
+```
+
+This will start an interactive chat session where you can test the agent's capabilities. The agent will process your queries, retrieve relevant documents from the vector database, and provide contextual responses.
 
 ## 🔧 Configuration
 
