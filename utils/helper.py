@@ -7,6 +7,7 @@ import sys
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from datetime import datetime
+from langchain_core.messages import ToolMessage
 
 # Add the app directory to Python path
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
@@ -60,3 +61,22 @@ def build_api_response(generic_response: GenericResponseModel) -> JSONResponse:
     except Exception as e:
         logger.error(msg=f"exception in build_api_response error : {e}")
         return JSONResponse(status_code=generic_response.status_code, content=generic_response.error)
+
+def check_tool_message_executed(messages):
+    """
+    Check if the last message in the sequence is a ToolMessage.
+    
+    Args:
+        messages (Sequence[AnyMessage]): A sequence of messages to check.
+        
+    Returns:
+        bool: True if the last message is a ToolMessage, False otherwise.
+    """
+    if not messages:
+        return False
+    for message in reversed(messages):
+        if isinstance(message, ToolMessage):
+            return True
+        if "tool_searching_information" in message.content:
+            return True
+    return False
