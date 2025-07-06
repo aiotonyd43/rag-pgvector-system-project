@@ -13,6 +13,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from settings.config import settings
 from apis.endpoints import audit, chat, knowledge, status
+from database.connection import create_tables, close_db
 from logs import logger
 
 # register startup and shutdown using lifespan Events
@@ -22,8 +23,7 @@ async def lifespan(app: FastAPI):
     logger.info("Startup Event Triggered")
     logger.info(f"Starting {settings.app_name} Application")
     logger.info(f"Debug mode: {settings.debug}")
-    logger.info(f"MinIO endpoint: {settings.minio_endpoint}")
-    logger.info(f"Iceberg catalog URI: {settings.iceberg_catalog_uri}")
+    logger.info(f"Database URL: {settings.database_url}")
     
     # check temp folder
     if not os.path.exists("temp"):
@@ -32,11 +32,26 @@ async def lifespan(app: FastAPI):
     else:
         logger.info("Temp folder already exists")
     
+    # Initialize database
+    try:
+        await create_tables()
+        logger.info("Database initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize database: {e}")
+        raise
+    
     yield
 
     # shutdown event
     logger.info("Shutdown Event Triggered")
     logger.info(f"Shutting down {settings.app_name} Application")
+
+    # Close database connections
+    try:
+        await close_db()
+        logger.info("Database connections closed")
+    except Exception as e:
+        logger.error(f"Error closing database connections: {e}")
 
     # delete temp folder
     if os.path.exists("temp"):
@@ -68,7 +83,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Update include_router calls
+# Include routers
 app.include_router(knowledge.router, prefix="/api")
 app.include_router(chat.router, prefix="/api")
 app.include_router(audit.router, prefix="/api")

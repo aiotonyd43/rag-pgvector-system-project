@@ -42,3 +42,9 @@ CREATE TRIGGER update_documents_updated_at
     BEFORE UPDATE ON documents 
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
+
+-- Insert some sample data (optional)
+INSERT INTO documents (content, metadata) VALUES 
+('This is a sample document about artificial intelligence and machine learning.', '{"source": "sample", "type": "text"}'),
+('FastAPI is a modern, fast web framework for building APIs with Python.', '{"source": "sample", "type": "documentation"}'),
+('PostgreSQL is a powerful, open source object-relational database system.', '{"source": "sample", "type": "database"}')
